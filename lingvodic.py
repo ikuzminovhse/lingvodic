@@ -13,11 +13,12 @@ def main():
     annotfiles = os.listdir(annotfolder)
     dictionfiles = os.listdir(dictionfolder)
     annotout = r'allanot.csv'
-    dictionout = r'alldiction.csv'
+    dictionout = r'alldiction_cnt.csv'
+    global_counter = 0
 
     #parse_dictionary_files
     with open(datafolder + dictionout, 'a') as csvfile:
-        fieldnames = ['dictionary_file', 'dic_name', 'dic_index_lang', 'dic_contents_lang', 'keyword', 'translation']
+        fieldnames = ['global_counter', 'dictionary_file', 'dic_name', 'dic_index_lang', 'dic_contents_lang', 'dic_counter', 'keyword', 'translation',]
         writer = csv.DictWriter(csvfile, delimiter=";", fieldnames=fieldnames)
         if os.stat(datafolder + dictionout).st_size == 0:
             writer.writeheader()
@@ -31,9 +32,10 @@ def main():
             try:
                 with _io.open(df,'r',encoding='utf-16-le') as dictionary_file:
                     for line in dictionary_file:
+                        global_counter +=1
                         counter +=1
                         if re.match(r'[ \t]', line):
-                            writer.writerow({'dictionary_file': f, 'dic_name': str(dic_name), 'dic_index_lang': str(dic_index_lang), 'dic_contents_lang': str(dic_contents_lang), 'keyword': str(keyword), 'translation': str(line)})
+                            writer.writerow({'global_counter': global_counter, 'dictionary_file': f, 'dic_name': str(dic_name), 'dic_index_lang': str(dic_index_lang), 'dic_contents_lang': str(dic_contents_lang), 'dic_counter': counter, 'keyword': str(keyword), 'translation': str(line)})
                         elif '#NAME' in line and counter < 5:
                             dic_name = line.split('"')[1]
                         elif '#INDEX_LANGUAGE' in line and counter < 5:
